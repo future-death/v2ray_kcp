@@ -1,0 +1,84 @@
+{
+  "log": {
+    "access": "/home/feng/access",
+    "error": "/home/feng/error",
+    "loglevel": "warning"
+  },
+  "inbounds": [{
+    "port": 9790,
+    "listen": "0.0.0.0",
+    "tag": "vmess-inbound",
+    "protocol": "vmess",
+    "settings": {
+      "udp": true,
+      "clients":[
+        {
+        "id": "4925d903-3fe9-4573-919e-89ab700b1d09",
+        "level": 0,
+        "alterId": 4
+        }
+      ]
+    },
+    "streamSettings":{
+       "network": "kcp",
+       "security": "none",
+       "kcpSettings": {
+               "mtu": 1350,
+               "tti": 20,
+               "uplinkCapacity": 4,
+               "downlinkCapacity": 15,
+               "congestion": false,
+               "readBufferSize": 1,
+               "writeBufferSize": 1,
+               "header": {
+                  "type": "none"
+               },
+               "seed": "fengorange"
+       }
+    },
+    "sniffing": {
+      "enabled": false,
+      "destOverride": ["http", "tls"]
+    }
+ }],
+ "outbounds": [{
+   "protocol": "freedom",
+   "settings": {},
+   "tag": "direct"
+  },{
+    "protocol": "blackhole",
+    "settings": {},
+    "tag": "blocked"
+  }],
+"transport": {},
+"routing": {
+  "domainStrategy": "AsIs",
+  "rules":[
+    {
+        "type": "field",
+        "ip": ["geoip:private"],
+        "outboundTag": "blocked"        
+},
+      {
+        "type": "field",
+        "domain": ["geosite:category-ads"],
+        "outboundTag": "blocked"
+      }
+    ]
+  },
+ "policy": {
+    "levels": {
+      "0": {
+        "uplinkOnly": 2,
+        "downlinkOnly": 5,
+        "bufferSize": 2048
+      }
+ },
+    "system": {
+      "statsInboundUplink": false,
+      "statsInboundDownlink": false,
+      "statsOutboundUplink": false,
+      "statsOutboundDownlink": false
+    }
+ }
+}
